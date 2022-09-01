@@ -1,0 +1,13 @@
+python-dateutil
+requests
+prettytable
+
+# for timeline
+plotly
+numpy
+
+# for colors
+seaborn
+
+# lexical analysis
+Distance
