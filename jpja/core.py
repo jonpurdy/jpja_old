@@ -19,6 +19,7 @@ from rich import inspect
 from rich.progress import track
 from time import sleep
 import plotly.graph_objects as go
+import sys
 
 # colors
 import seaborn as sns
@@ -28,7 +29,7 @@ from timeline import generate_timeline
 from classes import Issue
 from functions import get_time_difference_from_strings
 from functions import string_to_date
-from functions import compare_two_sentences
+#from functions import compare_two_sentences
 from functions import generate_nx_graph
 from functions import plotly_graph
 import jira 
@@ -38,23 +39,40 @@ import jira
 #     Options     #
 ###################
 
-headers = {"Accept": "application/json"}
-USERNAME = ""
-TOKEN = ""
-AUTH = HTTPBasicAuth(USERNAME, TOKEN)
-DOMAIN = "https://JIRA_URL"
 
-GET_IN_PROGRESS = False
+import argparse
+parser = argparse.ArgumentParser()
+
+# --domain "https://whatever.atlassian.net" --username "user@email.com" --token "jira_token"
+parser.add_argument("--domain", help="Jira domain")
+parser.add_argument("--username", help="Jira username")
+parser.add_argument("--token", help="Jira token")
+
+args = parser.parse_args()
+
+# print( "Domain {} User {} Password {} ".format(
+#         args.domain,
+#         args.username,
+#         args.token,
+#         ))
+
+headers = {"Accept": "application/json"}
+USERNAME = args.username
+TOKEN = args.token
+AUTH = HTTPBasicAuth(USERNAME, TOKEN)
+DOMAIN = args.domain
+
+GET_IN_PROGRESS = False # if set to True, will break because auth details aren't passed
 GROUP_NO_EPICS = False # if true, connects issues without an Epic to a "No Epic" node
 MAKE_TIMELINE = True
 MAKE_NETWORK_GRAPH = True
 
 # need to get this from the Jira API, per instance so it will change
-story_points_custom_field = "customfield_10026"
+story_points_custom_field = "customfield_10016" 
 epic_link_custom_field = "customfield_10014"
 
 
-JQL_QUERY = "project IN (PROJECT_1) AND statuscategory NOT IN (Done)"
+JQL_QUERY = "project IN (TEST) AND statuscategory NOT IN (Done)"
 
 # end of JQL for everyone
 JQL_END = " AND issuetype not in (subTaskIssueTypes(), Epic) ORDER BY project ASC, 'Epic Name' ASC, created ASC, issuetype ASC"
@@ -79,8 +97,9 @@ def main():
 
     all_epics_dict = jira.get_all_epics(AUTH, DOMAIN)
 
-    # just for testing
-    # jira.get_story_points_custom_field_id()
+    # just for testing, needed if we don't have story point or epic link custom field ID
+    # jira.get_story_points_custom_field_id(AUTH, DOMAIN, headers)
+    # exit()
     
     everything = jira.load_issues(AUTH, DOMAIN, JQL)
 

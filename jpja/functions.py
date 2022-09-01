@@ -1,6 +1,6 @@
 import distance
 import datetime
-import nltk
+#nltkimport nltk
 import dateutil.parser
 import networkx as nx
 import plotly.graph_objects as go
@@ -21,39 +21,6 @@ def get_time_difference_from_strings(start, end):
     end = string_to_date(end)
     difference = end - start
     return difference
-
-def compare_two_sentences(s1, s2):
-
-    s1_filt = filter_stopwords(s1)
-    s2_filt = filter_stopwords(s2)
-
-    # s1_filt = s1
-    # s2_filt = s2
-
-    l = distance.levenshtein(s1_filt, s2_filt)
-    #j = nltk.jaccard_distance(set(s1_filt), set(s2_filt))
-    j = 0
-
-    return l, j
-
-def filter_stopwords(sentence_string):
-    ''' Removes stopwords from a sentence
-        First converts to a list, then removes the words, then converts back to a string with spaces between list items.
-    '''
-
-    from nltk.corpus import stopwords 
-    from nltk.tokenize import word_tokenize
-
-    stop_words = set(stopwords.words('english')) 
-    s1_tokens = word_tokenize(sentence_string)
-    s1_filt = [w for w in s1_tokens if not w in stop_words]
-    s1_filt = []
-    for w in s1_tokens: 
-        if w not in stop_words: 
-            s1_filt.append(w)
-    s1_filt = ' '.join(s1_filt)
-
-    return s1_filt
 
 def generate_nx_graph(all_epics_dict, issue_list, group_no_epics):
 

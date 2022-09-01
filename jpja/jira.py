@@ -176,7 +176,7 @@ def get_issue_objects_list(everything, GET_IN_PROGRESS):
             this_issue.add_date_completed(datetime.datetime.now().strftime("%Y-%m-%d"))
         else:
             this_issue.add_date_completed(string_to_date(i['fields']['resolutiondate']).strftime("%Y-%m-%d"))
-        this_issue.story_points = i['fields']['customfield_10026']
+        this_issue.story_points = i['fields']['customfield_10016']
         this_issue.epic = i['fields'][epic_link_custom_field]
         this_issue.priority = i['fields']['priority']['name']
         if i['fields']['assignee'] is None:
@@ -233,19 +233,19 @@ def get_issue_objects_list(everything, GET_IN_PROGRESS):
     return issue_list, issue_types_list, priorities_list
 
 
-def get_changelog(jira_key):
+def get_changelog(auth, domain, jira_key):
 
     # auth = HTTPBasicAuth(USERNAME, TOKEN)
     # domain = DOMAIN
 
     headers = {"Accept": "application/json"}
-    USERNAME = "JIRA_USERNAME"
-    TOKEN = "JIRA_TOKEN"
-    AUTH = HTTPBasicAuth(USERNAME, TOKEN)
-    DOMAIN = "JIRA_URL" 
+    # USERNAME = ""
+    # TOKEN = ""
+    # AUTH = HTTPBasicAuth(USERNAME, TOKEN)
+    # DOMAIN = ""
 
-    domain = DOMAIN
-    auth = AUTH
+    # domain = DOMAIN
+    # auth = AUTH
 
     url = domain + "/rest/api/2/issue/%s?expand=changelog" % jira_key
 
@@ -258,12 +258,12 @@ def get_changelog(jira_key):
 
 
 
-def get_story_points_custom_field_id():
+def get_story_points_custom_field_id(AUTH, DOMAIN, headers):
 
 
-    auth = HTTPBasicAuth(USERNAME, TOKEN)
+    #auth = HTTPBasicAuth(USERNAME, TOKEN)
     url = DOMAIN + "/rest/api/2/field"
-    response = requests.request("GET", url, headers=headers, auth=auth)
+    response = requests.request("GET", url, headers=headers, auth=AUTH)
     #print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
     
     pprint(response.json())
